@@ -1170,11 +1170,19 @@ window.addEventListener("load", function () {
         document.querySelector(".loading-animation").style.opacity = "0";
         setTimeout(() => {
             document.querySelector(".loading-animation").style.display = "none";
-            document.querySelector(".ring").innerHTML = ''
+            document.querySelector(".ring").innerHTML = '';
         }, 2000);
     }, 1200);
-})
+});
 
+document.getElementById("confirmationOverlay").addEventListener("click", function () {
+    this.style.backgroundColor = `rgba(0, 0, 0, 0)`
+    this.innerHTML = ''
+    playBgm();
+    setTimeout(() => {
+        this.remove()
+    }, 500);
+});
 
 // ________[Badword]________
 function usernameCheck(username) {
