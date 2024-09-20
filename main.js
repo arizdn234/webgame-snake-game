@@ -85,13 +85,13 @@ function fadeIn(audioElement, duration, volume = 0.9) {
 
 function playBgm() {
     var bgmAudio = document.getElementById('bgm');
-    fadeIn(bgmAudio, 8000, 0.3)
+    fadeIn(bgmAudio, 8000, 0.1)
 }
 
 // SOUND & MUSIC
 function playBackgroundSound() {
     var bgAudio = document.getElementById('bgAudio');
-    fadeIn(bgAudio, 2000, 0.7)
+    fadeIn(bgAudio, 2000, 0.2)
 }
 
 function playEatSound() {
@@ -116,6 +116,21 @@ function clickSfx() {
     clickSfx.volume = 0.4
 }
 
+// movement sound
+const audioElements = ['mv1', 'mv2', 'mv3', 'mv4', 'mv5'];
+
+function playRandomAudio() {
+    const randomIndex = Math.floor(Math.random() * audioElements.length);
+    const selectedAudio = document.getElementById(audioElements[randomIndex]);
+
+    document.querySelectorAll('.mv').forEach(audio => {
+        audio.pause();
+        audio.currentTime = 0;
+    });
+
+    selectedAudio.volume = 0.3;
+    selectedAudio.play();
+}
 
 // ________[Pause & Play gameloop handler]________
 function pauseOrPlay(pause) {
@@ -1005,15 +1020,19 @@ document.addEventListener('keydown', function (e) {
     }
     if (isPlaying) {
         if (e.which === 37 && snake.dx === 0) {
+            playRandomAudio()
             snake.dx = -grid;
             snake.dy = 0;
         } else if (e.which === 38 && snake.dy === 0) {
+            playRandomAudio()
             snake.dy = -grid;
             snake.dx = 0;
         } else if (e.which === 39 && snake.dx === 0) {
+            playRandomAudio()
             snake.dx = grid;
             snake.dy = 0;
         } else if (e.which === 40 && snake.dy === 0) {
+            playRandomAudio()
             snake.dy = grid;
             snake.dx = 0;
         }
@@ -1148,6 +1167,7 @@ keyUp.addEventListener("touchend", function () {
 // Turn up
 keyUp.addEventListener("click", function () {
     if (snake.dy === 0) {
+        playRandomAudio()
         snake.dy = -grid;
         snake.dx = 0;
     }
@@ -1164,6 +1184,7 @@ keyDown.addEventListener("touchend", function () {
 // Turn down
 keyDown.addEventListener("click", function () {
     if (snake.dy === 0) {
+        playRandomAudio()
         snake.dy = grid;
         snake.dx = 0;
     }
@@ -1180,6 +1201,7 @@ keyLeft.addEventListener("touchend", function () {
 // Turn left
 keyLeft.addEventListener("click", function () {
     if (snake.dx === 0) {
+        playRandomAudio()
         snake.dx = -grid;
         snake.dy = 0;
     }
@@ -1196,6 +1218,7 @@ keyRight.addEventListener("touchend", function () {
 // Turn right
 keyRight.addEventListener("click", function () {
     if (snake.dx === 0) {
+        playRandomAudio()
         snake.dx = grid;
         snake.dy = 0;
     }
@@ -1317,12 +1340,14 @@ document.addEventListener('touchmove', function (event) {
         if (diffX > 0) {
             // console.log('Geser ke kiri terdeteksi');
             if (snake.dx === 0) {
+                playRandomAudio()
                 snake.dx = -grid;
                 snake.dy = 0;
             }
         } else {
             // console.log('Geser ke kanan terdeteksi');
             if (snake.dx === 0) {
+                playRandomAudio()
                 snake.dx = grid;
                 snake.dy = 0;
             }
@@ -1331,12 +1356,14 @@ document.addEventListener('touchmove', function (event) {
         if (diffY > 0) {
             // console.log('Geser ke atas terdeteksi');
             if (snake.dy === 0) {
+                playRandomAudio()
                 snake.dy = -grid;
                 snake.dx = 0;
             }
         } else {
             // console.log('Geser ke bawah terdeteksi');
             if (snake.dy === 0) {
+                playRandomAudio()
                 snake.dy = grid;
                 snake.dx = 0;
             }
