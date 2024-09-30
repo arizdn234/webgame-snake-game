@@ -66,37 +66,60 @@ var score = 0;
 var highscore = 0;
 var isPaused = false;
 
-function fadeIn(audioElement, duration, volume = 0.9) {
+// Fungsi untuk fade in sound
+function fadeIn(audioElement, duration, targetVolume = 0.9) {
     audioElement.volume = 0;
     audioElement.play();
     let fadeInInterval = 10;
-    let targetVolume = volume;
-
-    let volumeStep = 1 / (duration / fadeInInterval);
+    let volumeStep = targetVolume / (duration / fadeInInterval);
 
     const fadeInterval = setInterval(() => {
         if (audioElement.volume < targetVolume) {
-            audioElement.volume += volumeStep;
+            audioElement.volume = Math.min(audioElement.volume + volumeStep, targetVolume);
         } else {
             clearInterval(fadeInterval);
         }
     }, fadeInInterval);
 }
 
+// Fungsi untuk fade out sound
+function fadeOut(audioElement, duration) {
+    let fadeOutInterval = 8;
+    let volumeStep = audioElement.volume / (duration / fadeOutInterval);
+
+    const fadeInterval = setInterval(() => {
+        if (audioElement.volume > 0.2) {
+            audioElement.volume = Math.max(audioElement.volume - volumeStep, 0.2);
+        } else {
+            clearInterval(fadeInterval);
+            audioElement.pause();
+            audioElement.volume = 0.2;
+        }
+    }, fadeOutInterval);
+}
+
+
 function playBgm() {
     var bgmAudio = document.getElementById('bgm');
-    fadeIn(bgmAudio, 8000, 0.1)
+    fadeIn(bgmAudio, 8000, 0.2)
 }
 
 // SOUND & MUSIC
 function playBackgroundSound() {
     var bgAudio = document.getElementById('bgAudio');
-    fadeIn(bgAudio, 2000, 0.2)
+    fadeIn(bgAudio, 2000, 1)
 }
 
 function playEatSound() {
     var eatAudio = document.getElementById('eatAudio');
+    var bgAudio = document.getElementById('bgAudio');
+    let originalVolume = bgAudio.volume;
+
+    fadeOut(bgAudio, 600);  
     eatAudio.play();
+    setTimeout(() => {
+        fadeIn(bgAudio, 800, originalVolume);
+    }, 600);  
 }
 
 function playBombSound() {
@@ -107,13 +130,13 @@ function playBombSound() {
 function playCDSound() {
     var CDAudio = document.getElementById('CDAudio');
     CDAudio.play();
-    CDAudio.volume = 0.4
+    CDAudio.volume = 0.1
 }
 
 function clickSfx() {
     var clickSfx = document.getElementById('clickSfx');
     clickSfx.play();
-    clickSfx.volume = 0.4
+    clickSfx.volume = 0.3
 }
 
 // movement sound
@@ -146,9 +169,11 @@ function pauseOrPlay(pause) {
         var bgAudio = document.getElementById('bgAudio');
         fadeIn(bgAudio, 1000, 0.1)
         clickSfx()
+        
+        document.getElementById('interactive-menu').style.backgroundColor = `rgba(0, 0, 0, 0.5)`
+        document.getElementById('interactive-menu').style.backdropFilter = `blur(8px)`
 
         // Efek transisi
-
         if (window.matchMedia("(max-width: 769px)").matches) {
             musicMuteIcon.style.transform = 'translateX(-37px) rotate(-180deg)';
             soundMuteIcon.style.transform = 'translateX(-74px) rotate(-180deg)';
@@ -182,8 +207,12 @@ function pauseOrPlay(pause) {
         pauseIcon.style.zIndex = '0'
         playIcon.style.zIndex = '0'
         var bgAudio = document.getElementById('bgAudio');
-        fadeIn(bgAudio, 800, 0.7)
+        fadeIn(bgAudio, 800, 0.2)
         clickSfx()
+
+        document.getElementById('interactive-menu').style.backgroundColor = `rgba(0, 0, 0, 0)`
+        document.getElementById('interactive-menu').style.backdropFilter = `blur(0)`
+        console.log(document.getElementById('interactive-menu').style.backdropFilter);
 
         // Efek transisi
         musicMuteIcon.style.transform = 'translateX(0) rotate(0)';
@@ -286,10 +315,10 @@ function eatInteractive(gridx, gridy, point) {
 
 let lastTime = 0; // Time var comparer
 
+
 // ________[Game loop function]________
 function loop(timestamp) {
     if (!isPlaying) {
-        // requestAnimationFrame(loop);
         return;
     }
 
@@ -327,15 +356,13 @@ function loop(timestamp) {
         return;
     }
 
-    snake.cells.unshift({
-        x: snake.x,
-        y: snake.y
-    });
+    snake.cells.unshift({ x: snake.x, y: snake.y });
 
     if (snake.cells.length > snake.maxCells) {
         snake.cells.pop();
     }
 
+    // Snake rendering
     snake.cells.forEach(function (cell, index) {
         context.fillStyle = (index === 0) ? '#E79D56' : '#386858';
         context.fillRect(cell.x, cell.y, grid - 1, grid - 1);
@@ -346,73 +373,64 @@ function loop(timestamp) {
             return;
         }
 
-        if (cell.x === apple.x && cell.y === apple.y) {
-            snake.maxCells++;
-            var newAppleX, newAppleY;
+        // Collision detection with apples
+        apples.forEach((apple, appleIndex) => {
+            if (cell.x === apple.x && cell.y === apple.y) {
+                snake.maxCells++;
+                score++;
+                scoreText.textContent = `Score (${subPlayerName}): ${score}`;
+                playEatSound();
+                eatInteractive(snake.cells[0].x, snake.cells[0].y, 1);
 
-            do {
-                newAppleX = getRandomInt(0, 25) * grid;
-                newAppleY = getRandomInt(0, 25) * grid;
-            } while (
-                (newAppleX === pizza.x && newAppleY === pizza.y) ||
-                (newAppleX === bomb.x && newAppleY === bomb.y) ||
-                isCollidingWithSnake(newAppleX, newAppleY)
-            );
+                // Remove eaten apple and place a new one
+                apples.splice(appleIndex, 1);
+                setTimeout(() => {
+                    generateNewApple();
+                }, getRandomInt(500, 1500));
+            }
+        });
 
-            apple.x = newAppleX;
-            apple.y = newAppleY;
-            // apple.x = getRandomInt(0, 25) * grid;
-            // apple.y = getRandomInt(0, 25) * grid;
-            score++;
-            scoreText.textContent = `Score (${subPlayerName}):  ${score}`;
-            playEatSound(); // Mainkan suara saat memakan apel
-            eatInteractive(snake.cells[0].x, snake.cells[0].y, 1)
-        }
-
+        // Collision detection with other items (pizza, golden, bomb)...
         if (cell.x === pizza.x && cell.y === pizza.y) {
             snake.maxCells += 5;
-            // pizza.x = getRandomInt(0, 25) * grid;
-            // pizza.y = getRandomInt(0, 25) * grid;
-            // updatePizza()
             score += 5;
             scoreText.textContent = `Score (${subPlayerName}):  ${score}`;
             pizzaCount = 0;
-            playEatSound(); // Mainkan suara saat memakan pizza
-            eatInteractive(snake.cells[0].x, snake.cells[0].y, 5)
-            pizza.x = -grid;
-            pizza.y = -grid;
-            setTimeout(function () {
+            playEatSound();
+            eatInteractive(snake.cells[0].x, snake.cells[0].y, 5);
+            pizza.x = -grid; // Move pizza off-screen
+            setTimeout(() => {
                 pizza.x = getRandomInt(0, 25) * grid;
                 pizza.y = getRandomInt(0, 25) * grid;
             }, getRandomInt(10, 15) * 1000);
         }
 
         if (cell.x === golden.x && cell.y === golden.y) {
+            let point = getRandomInt(10, 50);
             snake.maxCells += getRandomInt(2, 7);
-            // golden.x = getRandomInt(0, 25) * grid;
-            // golden.y = getRandomInt(0, 25) * grid;
-            // updateGolden()
-            let point = getRandomInt(10, 50)
             score += point;
             scoreText.textContent = `Score (${subPlayerName}):  ${score}`;
             goldenCount = 0;
-            playEatSound(); // Mainkan suara saat memakan golden
-            eatInteractive(snake.cells[0].x, snake.cells[0].y, point)
-            golden.x = -grid;
-            golden.y = -grid;
+            playEatSound();
+            eatInteractive(snake.cells[0].x, snake.cells[0].y, point);
+            golden.x = -grid; // Move golden apple off-screen
         }
 
         if (cell.x === bomb.x && cell.y === bomb.y) {
-            playBombSound(); // Mainkan suara saat memakan bom
+            playBombSound();
             gameOver();
             return;
         }
     });
 
+    // Draw apples
     var appleImage = new Image();
     appleImage.src = 'assets/item/apple.svg';
-    context.drawImage(appleImage, apple.x, apple.y, grid - 1, grid - 1);
+    apples.forEach(apple => {
+        context.drawImage(appleImage, apple.x, apple.y, grid - 1, grid - 1);
+    });
 
+    // Draw other items (pizza, golden, bomb)
     var pizzaImage = new Image();
     pizzaImage.src = 'assets/item/pizza.svg';
     context.drawImage(pizzaImage, pizza.x, pizza.y, grid - 1, grid - 1);
@@ -428,44 +446,69 @@ function loop(timestamp) {
     // Track the game loop speed
     const deltaTime = Math.ceil(timestamp - lastTime);
     lastTime = timestamp;
-    // console.log(`Kecepatan loop game ${deltaTime}ms, treshold: ${countThreshold}, pizza ${pizzaCount}, bomb ${bombCount}, golden ${goldenCount}`);
-    // console.log(`Kecepatan loop game ${deltaTime}ms, x=${snake.cells[0].x} y=${snake.cells[0].y}`);
 }
 
 //Agar item tidak stack dengan sesama
-function initializeItem(item) {
-    let newItemX, newItemY;
+function initializeItem(itemArray, itemCount = 1) {
+    for (let i = 0; i < itemCount; i++) {
+        let newItemX, newItemY;
 
-    do {
-        newItemX = getRandomInt(0, 25) * grid;
-        newItemY = getRandomInt(0, 25) * grid;
-    } while (
-        (newItemX === snake.x && newItemY === snake.y) ||
-        (newItemX === apple.x && newItemY === apple.y) ||
-        (newItemX === pizza.x && newItemY === pizza.y) ||
-        (newItemX === golden.x && newItemY === golden.y) ||
-        (newItemX === bomb.x && newItemY === bomb.y) ||
-        isCollidingWithSnake(newItemX, newItemY)
-    );
+        do {
+            newItemX = getRandomInt(0, 25) * grid;
+            newItemY = getRandomInt(0, 25) * grid;
+        } while (
+            isCollidingWithSnake(newItemX, newItemY) ||
+            itemArray.some(item => item.x === newItemX && item.y === newItemY)
+        );
 
-    item.x = newItemX;
-    item.y = newItemY;
+        itemArray.push({ x: newItemX, y: newItemY });
+    }
 }
 
-// Kemudian, gunakan fungsi ini untuk menginisialisasi item:
-initializeItem(apple);
-initializeItem(pizza);
-initializeItem(golden);
-initializeItem(bomb);
+// Function to generate new apples
+function generateNewApple() {
+    let newAppleX, newAppleY;
+
+    do {
+        newAppleX = getRandomInt(0, 25) * grid;
+        newAppleY = getRandomInt(0, 25) * grid;
+    } while (
+        isCollidingWithSnake(newAppleX, newAppleY) ||
+        apples.some(apple => apple.x === newAppleX && apple.y === newAppleY)
+    );
+
+    apples.push({ x: newAppleX, y: newAppleY });
+}
+
+// Call this function initially to populate the board with apples
+function initializeApples(count = 5) {
+    for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+            generateNewApple();
+        }, i * getRandomInt(500, 1500));
+    }
+}
+
+let apples = [];
+let pizzas = [];
+let goldens = [];
+let bombs = [];
+
+// Initialize other items
+initializeItem(pizzas);
+initializeItem(goldens);
+initializeItem(bombs);
+
+// Initialize apples with the desired number
+initializeApples(3);
 
 function isCollidingWithSnake(x, y) {
-    // Cek apakah koordinat (x, y) bertabrakan dengan tubuh ular
     for (let i = 0; i < snake.cells.length; i++) {
         if (snake.cells[i].x === x && snake.cells[i].y === y) {
-            return true; // Ada tumpang tindih dengan tubuh ular
+            return true;
         }
     }
-    return false; // Tidak ada tumpang tindih dengan tubuh ular
+    return false;
 }
 
 function updatePizza() {
@@ -1122,18 +1165,24 @@ window.addEventListener("load", function () {
         }
         localStorage.setItem('players', JSON.stringify(allPlayers));
     }
-    setTimeout(() => {
-        playBgm()
-    }, 5000); // auto play bgm setelah 8 detik
+
     setTimeout(() => {
         document.querySelector(".loading-animation").style.opacity = "0";
         setTimeout(() => {
             document.querySelector(".loading-animation").style.display = "none";
-            document.querySelector(".ring").innerHTML = ''
+            document.querySelector(".ring").innerHTML = '';
         }, 2000);
     }, 1200);
-})
+});
 
+document.getElementById("confirmationOverlay").addEventListener("click", function () {
+    this.style.backgroundColor = `rgba(0, 0, 0, 0)`
+    this.innerHTML = ''
+    playBgm();
+    setTimeout(() => {
+        this.remove()
+    }, 500);
+});
 
 // ________[Badword]________
 function usernameCheck(username) {

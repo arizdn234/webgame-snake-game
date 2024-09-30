@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Monoton&family=Poppins:wght@300;400;500;600;700;800;900&family=VT323&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Love+Ya+Like+A+Sister&family=Sedgwick+Ave&display=swap');
 * {
     margin: 0;
     padding: 0;
@@ -17,11 +17,16 @@ body {
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */
     user-select: none; /* Standard syntax */
+    cursor: none;
 }
 
 /* KONTAINER ATAS */
 .head-container {
-    position: relative;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    transition: all .3s ease-in-out;
 }
 
 .head-container .icon {
@@ -41,11 +46,11 @@ body {
 }
 
 .head-container img:hover {
-    cursor: pointer;
+    cursor: none;
     background-color: #e2e2e2;
 }
 
-.head-container p {
+.head-title {
     text-align: center;
     margin: 45px;
     font-size: 2.5em;
@@ -177,7 +182,7 @@ canvas {
     justify-content: center;
     align-items: center;
     margin: 30px;
-    font-family: Poppins;
+    font-family: "Love Ya Like A Sister", cursive;
     font-size: 0.75em;
     width: 600px;
     height: 400px;
@@ -192,11 +197,16 @@ canvas {
     flex-direction: column;
     align-items: start;
     gap: 5px;
+    cursor: none;
+}
+
+#user-form input {
+    cursor: none;
 }
 
 #name,
 #level {
-    font-family: Poppins;
+    font-family: "Sedgwick Ave", cursive;
     font-size: 1em;
     width: 400px;
     height: 35px;
@@ -208,12 +218,12 @@ canvas {
 
 #level {
     width: 100%;
-    cursor: pointer;
+    cursor: none;
 }
 
 
 select option {
-    font-family: Poppins;
+    font-family: "Sedgwick Ave", cursive;
     color: #1A3A45;
     background-color: #DDE2E3;
     border-radius: 5px;
@@ -236,7 +246,7 @@ form div:last-child span {
 #startButton,
 #guestMode,
 .open-game {
-    font-family: Poppins;
+    font-family: "Love Ya Like A Sister", cursive;
     display: block;
     background-color: #4CAF50;
     color: white;
@@ -251,7 +261,7 @@ form div:last-child span {
 .open-game:hover,
 .open-game:focus {
     background-color: #3b8b3e;
-    cursor: pointer;
+    cursor: none;
 }
 
 #guestMode {
@@ -261,7 +271,7 @@ form div:last-child span {
 #guestMode:hover,
 #guestMode:focus {
     background-color: #3f798d;
-    cursor: pointer;
+    cursor: none;
 }
 
 /* Icon pause dan teman2 */
@@ -315,7 +325,7 @@ form div:last-child span {
     width: 50px;
     top: 15px;
     left: 20px;
-    cursor: pointer;
+    cursor: none;
     padding: .5em;
     animation: shakeY 1s infinite;
 }
@@ -340,7 +350,7 @@ form div:last-child span {
 .close:hover,
 .close:focus {
     color: #727272;
-    cursor: pointer;
+    cursor: none;
 }
 
 /* LEADERBOARD MODAL */
@@ -369,7 +379,7 @@ form div:last-child span {
 .closeLeaderboard:hover,
 .closeLeaderboard:focus {
     color: #727272;
-    cursor: pointer;
+    cursor: none;
 }
 
 .level-navigation {
@@ -387,7 +397,7 @@ form div:last-child span {
     background: none;
     font-weight: bold;
     font-size: 18px;
-    cursor: pointer;
+    cursor: none;
     border-radius: 12px;
     border-collapse: collapse;
     transition: border .3s ease-in-out, background-color 0.2s ease-in-out;
@@ -417,7 +427,7 @@ tr td {
 
 /* START Countdown style */
 .countdown {
-    font-family: Poppins;
+    font-family: "Sedgwick Ave", cursive;
     font-weight: bold;
     z-index: 2;
 }
@@ -469,7 +479,7 @@ tr td {
 }
 
 .landing-page .content p {
-    font-family: Poppins;
+    font-family: "Sedgwick Ave", cursive;
     font-size: 3.7em;
     font-weight: bold;
     text-align: center;
@@ -498,7 +508,7 @@ tr td {
 }
 
 .news img:hover {
-    cursor: pointer;
+    cursor: none;
 }
 
 .news-content {
@@ -516,7 +526,7 @@ tr td {
     border: 8px solid #1A3A45;
     border-radius: 30px;
     filter: drop-shadow(5px 5px 5px #22222255);
-    font-family: Poppins;
+    font-family: "Love Ya Like A Sister", cursive;
     font-size: 0.75em;
     transition: all .3s ease-in-out;
 }
@@ -603,7 +613,7 @@ tr td {
     height: 100vh;
     position: absolute;
     background-color: rgba(0, 0, 0, 0.9);
-    z-index: 11;
+    z-index: 61;
     transition: all .8s;
 }
 
@@ -664,6 +674,25 @@ tr td {
     top: -6px;
     right: -8px;
     box-shadow: 0 0 20px #fff000;
+}
+
+/* overlay */
+.confirmation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    cursor: none;
+    z-index: 51;
+    transition: all .5s ease-in-out;
 }
 
 @keyframes animateC {
@@ -815,7 +844,7 @@ tr td {
         outline: #0D1D23 solid 3px;
     }
 
-    .head-container p {
+    .head-title {
         display: none;
     }
 
@@ -919,3 +948,4 @@ tr td {
     left: -4em;
     pointer-events: none;
     z-index: 99999999;
+}

@@ -34,24 +34,29 @@
         </div>
     </div>
 
+    <!-- Confirmation overlay -->
+    <div id="confirmationOverlay" class="confirmation-overlay">
+        <p>Click to Start the Game</p>
+    </div>
+
     <div class="landing-page">
         <img class="bg-cover" src="assets/bg.png" alt="bg">
         <div class="content">
-            <p>Snake Amazon</p>
+            <p>Snake Snacky!</p>
             <button onclick="closeLandingPage()" class="open-game">Open Game</button>
         </div>
         <div class="news">
             <img id="newsIcon" src="assets/news.svg" alt="News" onclick="newsDisplay()">
             <div class="news-content">
                 <span id="closeNews" class="close-button" onclick="closeNews()" aria-disabled="true">X</span>
-                <h3>Snake Amazon News</h3>
-                <p>Snake Amazon is now available in a website version optimized exclusively for tablet and
+                <h3>Snake Snacky! News</h3>
+                <p>Snake Snacky! is now available in a website version optimized exclusively for tablet and
                     mobile devices 💖✨</p>
             </div>
         </div>
     </div>
 
-    <div class="head-container">
+    <div class="head-container" id="interactive-menu">
         <div class="icon">
             <div class="pause-play-icon">
                 <img id="pauseIcon" src="assets/pause.svg" alt="Pause" onclick="pauseOrPlay(true)"
@@ -75,8 +80,8 @@
             <img id="homeIcon" src="assets/home.svg" alt="Home" onclick="returnToLandingPage()" style="display: none;"
                 title="Back to Homepage">
         </div>
-        <p>Snake Amazon</p>
     </div>
+    <p class="head-title">Snake Snacky!</p>
 
     <audio id="bgm" src="assets/sound/bgm.mp3" loop></audio>
     <audio id="bgAudio" src="assets/sound/bg.mp3" loop></audio>
