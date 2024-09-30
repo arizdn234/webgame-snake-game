@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Monoton&family=Poppins:wght@300;400;500;600;700;800;900&family=VT323&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Love+Ya+Like+A+Sister&family=Sedgwick+Ave&display=swap');
 * {
     margin: 0;
     padding: 0;
@@ -21,7 +21,11 @@ body {
 
 /* KONTAINER ATAS */
 .head-container {
-    position: relative;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    transition: all .3s ease-in-out;
 }
 
 .head-container .icon {
@@ -45,7 +49,7 @@ body {
     background-color: #e2e2e2;
 }
 
-.head-container p {
+.head-title {
     text-align: center;
     margin: 45px;
     font-size: 2.5em;
@@ -177,7 +181,7 @@ canvas {
     justify-content: center;
     align-items: center;
     margin: 30px;
-    font-family: Poppins;
+    font-family: "Love Ya Like A Sister", cursive;
     font-size: 0.75em;
     width: 600px;
     height: 400px;
@@ -196,7 +200,7 @@ canvas {
 
 #name,
 #level {
-    font-family: Poppins;
+    font-family: "Sedgwick Ave", cursive;
     font-size: 1em;
     width: 400px;
     height: 35px;
@@ -213,7 +217,7 @@ canvas {
 
 
 select option {
-    font-family: Poppins;
+    font-family: "Sedgwick Ave", cursive;
     color: #1A3A45;
     background-color: #DDE2E3;
     border-radius: 5px;
@@ -236,7 +240,7 @@ form div:last-child span {
 #startButton,
 #guestMode,
 .open-game {
-    font-family: Poppins;
+    font-family: "Love Ya Like A Sister", cursive;
     display: block;
     background-color: #4CAF50;
     color: white;
@@ -417,7 +421,7 @@ tr td {
 
 /* START Countdown style */
 .countdown {
-    font-family: Poppins;
+    font-family: "Sedgwick Ave", cursive;
     font-weight: bold;
     z-index: 2;
 }
@@ -469,7 +473,7 @@ tr td {
 }
 
 .landing-page .content p {
-    font-family: Poppins;
+    font-family: "Sedgwick Ave", cursive;
     font-size: 3.7em;
     font-weight: bold;
     text-align: center;
@@ -516,7 +520,7 @@ tr td {
     border: 8px solid #1A3A45;
     border-radius: 30px;
     filter: drop-shadow(5px 5px 5px #22222255);
-    font-family: Poppins;
+    font-family: "Love Ya Like A Sister", cursive;
     font-size: 0.75em;
     transition: all .3s ease-in-out;
 }
@@ -815,7 +819,7 @@ tr td {
         outline: #0D1D23 solid 3px;
     }
 
-    .head-container p {
+    .head-title {
         display: none;
     }
 
@@ -919,3 +923,4 @@ tr td {
     left: -4em;
     pointer-events: none;
     z-index: 99999999;
+}
